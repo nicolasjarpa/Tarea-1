@@ -5,6 +5,65 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.*;
 
+
+class Articulo{
+    private float peso;
+    private String nombre;
+    private String descripcion;
+    private float precio;
+    
+    public Articulo(String l, String p, float elpepe, float sech){
+        peso = elpepe;
+        precio = sech;
+        nombre = l;
+        descripcion = p;
+    }
+    
+    public float getPeso(){
+        return peso;
+    }
+    
+    public float getPrecio(){
+        return precio;
+    }
+    
+    public String toString(){
+        return "Nombre Articulo:"+nombre+"\nDescripcion:"+descripcion+"\nPeso:"+peso+"\nPrecio:"+precio;
+    }
+}
+
+class DetalleOrden{
+    private Articulo Lucario;
+    private int cantidad;
+    
+    public DetalleOrden(int c, Articulo cosa){
+        cantidad = c;
+        Lucario = cosa;
+   }
+    public float calcPrecio(){
+  
+        return Lucario.getPrecio()*cantidad;
+    }
+    
+    public float calcPrecioSinIva(){
+
+        return Lucario.getPrecio()/(119/100)*cantidad;
+    }
+        
+    public float calcIVA(){
+       return Lucario.getPrecio()*(19/100)*cantidad;
+    }
+    
+    public float calcPeso(){
+        
+        return Lucario.getPeso()*cantidad;
+    }
+    
+    public String toString(){
+        return "Cantidad:"+cantidad+"\n"+Lucario.toString();
+    }
+}
+
 class OrdenCompra{
     private Date fecha;
     private String estado = "Pendiente";
@@ -19,7 +78,6 @@ class OrdenCompra{
     public OrdenCompra(Date f){
         prp = new ArrayList <DetalleOrden>();
         this.fecha = f;
-        pe = new ArrayList <Pago>();
  
     }
     public void addArticulo(Articulo xd, int c){
@@ -60,20 +118,18 @@ class OrdenCompra{
         return precios;
     }
     
-    
     public void Efectivo(Efectivo e){
         pe.add(new Pago(e.getMonto(), e.getFecha()));
         float debt = calcPrecio()-e.getMonto();
 
         if(debt<0){
             e.calcDevolucion(debt);
+            debt = 0;
         }
         
         if (debt==0){
             estado = "Completado";
         }
-        
-        e.getMonto();
     }
     
     public void Tarjeta(Tarjeta t){
@@ -124,41 +180,194 @@ class OrdenCompra{
          for (int i = 0; i <prp.size(); i++) {
             aux3 = aux2 + prp.get(i).toString();
         }
-        aux4 = aux3 + "\nPrecio con Iva:" + calcPrecio() + "\n"+"Precio sin IVA:" + calcPreciosinIVA() + "\n"+"IVA:" + calcIVA();
+        aux4 = aux3 + "Precio con Iva:" + calcPrecio() + "\n"+"Precio sin IVA:" + calcPreciosinIVA() + "\n"+"IVA:" + calcIVA();
         for (int i = 0; i < pe.size(); i++) {
             aux5 = aux4+"\n"+ "Pagos:"+ pe.get(i).toString();
         }
         
         return aux5;
+>>>>>>> 34eaba1966032f40c497a93b07bec9e176ccf066
     }
     
+}
+class Cliente{
+    private String nombre;
+    private String rut;
+    public Cliente(String n, String r){
+        nombre = n;
+        rut = r;
+    }
     
+    public String toString(){
+        return "Nombre Cliente: "+nombre+"\n"+ "Rut: "+rut+"\n"+"Direccion:";
+    }
+    public String getNombre(){
+        return nombre;
+    }
+    
+    public String getRut(){
+        return rut;
+    }
     
 }
+
+class Direccion{
+
+    private String direccion;
+    
+    public Direccion(String d){
+        direccion = d;
+    }
+    
+    public String getDireccion(){
+        return direccion;
+    }
+    public String toString(){
+        return "Direccion:"+getDireccion()+"\n";
+    }
+}
+
+class DocTributario{
+    private String numero;
+    private String rut;
+    private Date fecha;
+    
+    public DocTributario(String n, String r, Date f){
+        numero = n;
+        rut = r;
+        fecha = f;
+    }
+    
+    public String getNumero(){
+        return numero;
+    }
+    
+    public String getRut(){
+        return rut;
+    }
+    
+    public Date getFecha(){
+        return fecha;
+    }
+    
+    public String toString(){
+        return "Numero:"+getNumero()+"\n"+"Rut:"+getRut()+"\n"+"\nFecha:"+getFecha()+"\n";
+    }
+}
+
+class Boleta extends DocTributario{
+    
+    public Boleta(String n, String m, Date k){
+        super(n, m, k);
+    }
+} 
+
+class Factura extends DocTributario{
+    
+    public Factura(String n, String m, Date k){
+        super(n, m , k);
+    }
+} 
+
+class Pago{
+    private float monto;
+    private Date fecha;
+    
+    public Pago(float m, Date f){
+        monto = m;
+        fecha = f;
+    }
+    
+    public float getMonto(){
+        return monto;
+    }
+    
+    public Date getFecha(){
+        return fecha;
+    }
+     public String toString(){
+        return "monto:"+getMonto()+"\nFecha:"+getFecha();
+    }
+}
+
+class Efectivo extends Pago{
+
+    
+    public Efectivo(float k, Date s){
+        
+        super(k, s);
+    }
+    
+    public float calcDevolucion(float paga){
+        if(paga>super.getMonto()){
+            paga = paga - super.getMonto();
+        }
+        
+        else{
+            return 0;
+        }
+        
+        return paga;
+    }
+}
+
+class Transferencia extends Pago{
+    private String banco;
+    private String numCuenta;
+    
+    public Transferencia(float pe, Date k,String b, String nu){
+        super(pe, k);
+        banco = b;
+        numCuenta = nu;
+        
+    } 
+    
+    public String getBanco(){
+        return banco;
+    }
+    
+    public String getnumCuenta(){
+        return numCuenta;
+    }
+}
+
+class Tarjeta extends Pago{
+    private String tipo;
+    private String numTransaccion;
+    
+    public Tarjeta(float sh, Date d,String t, String nt){
+        super(sh, d);
+        tipo = t;
+        numTransaccion = nt;
+    }
+    
+    public String getTipo(){
+        return tipo;
+    }
+    
+    public String getnumTransaccion(){
+        return numTransaccion;
+    }
+}
+
+
+
+
+
 
 public class TareaProg {
 
 
     public static void main(String[] args) {
         Date fecha= new Date(122,5,6,10,3,4);
+        Direccion casa= new Direccion("av los autos");
         Cliente pepe =  new Cliente("John Cena", "20.879.273-8");
         Articulo a = new Articulo("Elpepe", "Es el pepe", 500, 69420);
         DetalleOrden e = new DetalleOrden(69, a);
-        Direccion se = new Direccion("Noxus 879");
-        Boleta k = new Boleta("John Cena", "20.879.273-8", fecha);
-        OrdenCompra el = new OrdenCompra(fecha);
-        Efectivo po = new Efectivo(69421f, fecha);
-        Transferencia pp = new Transferencia(69420, fecha, "Banco Estao", "696969");
-        Pago pago = new Pago(69421f, fecha);
-        el.BoletaoFactura("101204394", pepe.getRut(), fecha, 1);
-        el.Documento(pepe, se , 1);
-        el.Transferencia(pp);
-        el.addArticulo(a, 1);
-        el.calcIVA();
-        el.calcPeso();
-        el.calcPrecio();
-        el.calcPreciosinIVA();
-        System.out.println(el.toString());
+        System.out.println(fecha);
+        System.out.println(pepe.toString());
+        System.out.println(e.toString());
+
     }
     
 }
